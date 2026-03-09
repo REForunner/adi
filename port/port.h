@@ -13,6 +13,11 @@ extern "C" {
 #include "../memory/memory.h"
 
 /**
+ * this libary version
+ */
+#define LIB_VERSION     "0.0.1"
+
+/**
  * port interface
  */
 typedef struct Port {

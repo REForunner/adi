@@ -12,82 +12,6 @@ extern "C" {
 #include "../adi/adi.h"
 
 /**
- * memory information
- */
-typedef struct MemInfo {
-    /**
-     * used flag
-     */
-    bool isUSE;
-    /**
-     * start address
-     */
-    uint32_t addr;
-    /**
-     * memory size bytes[all data]
-     */
-    uint32_t bytes;
-    /**
-     * memory data pointer
-     */
-    uint8_t * data;
-    /**
-     *  data buffer size
-     */
-    uint32_t bufSize;
-    /**
-     * Private data maybe "getData" used
-     */
-    void * private_data;
-    /**
-     * get current memory data
-     * @param info memory information interface
-     * @param private_data private data eg. Transmit and obtain custom structures related to data
-     * @param data pointer of store the get data
-     * @param needbytes need to bytes when obtaining, must be less then MemInfo.bufSize!!!
-     * @return 0 on success, error code otherwise
-     */
-    int ( * getData)(struct MemInfo * info, void * private_data, uint8_t * data, uint32_t needbytes);
-
-} MemInfo;
-
-/**
- * memory image
- */
-typedef struct MemImage {
-    /**
-     * Private data
-     */
-    void * private_data;
-
-    /**
-     * stack
-     */
-    MemInfo stack;
-
-    /**
-     * breakpoint instruction 
-     */
-    MemInfo bkpt;
-
-    /**
-     * ram code (include static areas)
-     */
-    MemInfo ramCode;
-
-    /**
-     * data buffer
-     */
-    MemInfo buffer;
-    
-    /**
-     * data buffer 2, if use double buffer
-     */
-    MemInfo buffer_2;
-
-} MemImage;
-
-/**
  * memory interface
  */
 typedef struct Mem {
@@ -97,22 +21,10 @@ typedef struct Mem {
     void * private_data;
     
     /**
-     * memory image
-     */
-    MemImage image;
-
-    /**
      * ADI interface
      */
     ADI * adi;
 
-    /**
-     * build ram image in the target
-     * @param mem memory interface
-     * @return 0 on success, error code otherwise
-     */
-    int ( * buildImage)(struct Mem * mem);
-    
     /**
      * Poll until the value of address is equal [value]
      * @param mem memory interface

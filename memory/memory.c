@@ -1,42 +1,5 @@
 
 #include "memory.h"
-
-/**
- * build ram image in the target
- * @param mem memory interface
- * @return 0 on success, error code otherwise
- */
-static int buildImage(struct Mem * mem)
-{
-    int result = -1;
-    uint32_t cnt = (sizeof(mem->image) - sizeof(mem->image.private_data)) / sizeof(MemInfo);
-    MemInfo * info = &mem->image.stack;
-    // write data to ram refer to MemInfo
-    for(int i = 0; i < cnt; i++)
-    {
-        uint32_t sz = 0;
-        // if use
-        if(true == info[i].isUSE)
-        {
-            for(uint32_t j = 0; j < info[i].bytes; j += sz)
-            {
-                sz = info[i].bytes - j;
-                if(sz >= info[i].bufSize)
-                    sz = info[i].bufSize;
-                // get data
-                result = info[i].getData(info, info[i].private_data, info[i].data, sz);
-                if(SUCCESS != result)
-                    return result;
-                // write data
-                result = mem->write(mem, info[i].addr, sz, (const uint8_t *)info[i].data);
-                if(SUCCESS != result)
-                    return result;
-            }
-        }
-    }
-    // return
-    return (int)SUCCESS;
-}
     
 /**
  * Poll until the value of address is equal [value]
@@ -162,7 +125,6 @@ Mem * mem_creat(Mem * mem, ADI * adi, void * private_data)
         return NULL;
     
     // Initialize function pointers
-    mem->buildImage = buildImage;
     mem->read = read;
     mem->write = write;
     // set adi
